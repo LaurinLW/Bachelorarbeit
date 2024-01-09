@@ -101,7 +101,6 @@ public class InputController : MonoBehaviour
                 }
                 else if (Vector2.Distance(rightWrist.transform.position, rightShoulder.transform.position) > shoulderDistance)
                 {
-
                     inputDirectionRightSide = Direction.Right;
                 }
             }

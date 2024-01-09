@@ -87,7 +87,7 @@ public class PoseSkeleton
         {
             this.keypoints[i] = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
             this.keypoints[i].position = new Vector3(0, 0, 0);
-            this.keypoints[i].localScale = new Vector3(pointScale, pointScale, 0);
+            this.keypoints[i].localScale = new Vector3(pointScale, pointScale, 1);
             this.keypoints[i].gameObject.GetComponent<MeshRenderer>().material = keypointMat;
             this.keypoints[i].gameObject.name = partNames[i];
         }
@@ -212,7 +212,7 @@ public class PoseSkeleton
 
             // Update the current key point location
             // Set the z value to -1f to place it in front of the video screen
-            this.keypoints[k].position = new Vector3(coords.x * scale + 640 * (1f - scale), coords.y * scale + 360 * (1f - scale), -1f);
+            this.keypoints[k].position = new Vector3(coords.x * scale + 640 * (1f - scale), coords.y * scale + 360 * (1f - scale), 620f);
         }
     }
 

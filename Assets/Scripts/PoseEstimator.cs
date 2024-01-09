@@ -174,7 +174,7 @@ public class PoseEstimator : MonoBehaviour
         // Adjust the VideoScreen dimensions for the new videoTexture
         videoScreen.localScale = new Vector3(width * scale, height * scale, videoScreen.localScale.z);
         // Adjust the VideoScreen position for the new videoTexture
-        videoScreen.position = new Vector3(width / 2, height / 2, 1);
+        videoScreen.position = new Vector3(width / 2, height / 2, 620);
     }
 
     /// <summary>
@@ -189,7 +189,7 @@ public class PoseEstimator : MonoBehaviour
         //mainCamera.transform.position = new Vector3(videoDims.x / 2, videoDims.y / 2, -10f);
 
         // Render objects with no perspective (i.e. 2D)
-        mainCamera.GetComponent<Camera>().orthographic = true;
+        mainCamera.GetComponent<Camera>().orthographic = false;
         // Adjust the camera size to account for updates to the VideoScreen
         mainCamera.GetComponent<Camera>().orthographicSize = videoDims.y / 2;
     }
