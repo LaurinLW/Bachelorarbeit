@@ -393,10 +393,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80536c65375376d4289e8e124ed0aca5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leftWrist: {fileID: 0}
-  rightWrist: {fileID: 0}
-  leftShoulder: {fileID: 0}
-  rightShoulder: {fileID: 0}
+  videoScreen: {fileID: 1507412767}
+  inputDirectionLeftSide: 1
+  inputDirectionRightSide: 1
+  balancing: 0.5
 --- !u!4 &1234578945
 Transform:
   m_ObjectHideFlags: 0

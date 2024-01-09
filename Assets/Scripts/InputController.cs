@@ -4,21 +4,32 @@ using UnityEngine;
 
 public class InputController : MonoBehaviour
 {
-    public GameObject leftWrist;
-    public GameObject rightWrist;
-    public GameObject leftShoulder;
-    public GameObject rightShoulder;
+    public GameObject videoScreen;
+    private GameObject leftWrist;
+    private GameObject rightWrist;
+    private GameObject leftShoulder;
+    private GameObject rightShoulder;
 
     private MeshRenderer leftWristMeshRenderer;
     private MeshRenderer rightWristMeshRenderer;
     private MeshRenderer leftShoulderMeshRenderer;
     private MeshRenderer rightShoulderMeshRenderer;
 
-    // Start is called before the first frame update
-    void Start()
+    public enum Direction
     {
-
+        Up,
+        Down,
+        Left,
+        Right
     }
+
+    [Tooltip("Direction of the Body/Arms")]
+    public Direction inputDirectionLeftSide = Direction.Down;
+    public Direction inputDirectionRightSide = Direction.Down;
+
+    [Tooltip("Balance the amount of effort for the direction")]
+    [Range(0.5f, 1f)]
+    public float balancing = 0.5f;
 
     //find all important key points from the model
     void findAllElements()
@@ -62,7 +73,37 @@ public class InputController : MonoBehaviour
         {
             if (allActivated())
             {
-                
+                float shoulderDistance = Mathf.Abs(leftShoulder.transform.position.x - rightShoulder.transform.position.x) / 2;
+                //TODO: hand is down, up , left or right -> slidebar to adjust some sort of difficulty?
+                if (leftWrist.transform.position.y < leftShoulder.transform.position.y - shoulderDistance * balancing
+                    && Vector2.Distance(leftWrist.transform.position, leftShoulder.transform.position) > shoulderDistance)
+                {
+                    inputDirectionLeftSide = Direction.Down;
+                }
+                else if (leftWrist.transform.position.y > leftShoulder.transform.position.y + shoulderDistance * balancing
+                    && Vector2.Distance(leftWrist.transform.position, leftShoulder.transform.position) > shoulderDistance)
+                {
+                    inputDirectionLeftSide = Direction.Up;
+                }
+                else if (Vector2.Distance(leftWrist.transform.position, leftShoulder.transform.position) > shoulderDistance)
+                {
+                    inputDirectionLeftSide = Direction.Left;
+                }
+                if (rightWrist.transform.position.y < rightShoulder.transform.position.y - shoulderDistance * balancing
+                    && Vector2.Distance(rightWrist.transform.position, rightShoulder.transform.position) > shoulderDistance)
+                {
+                    inputDirectionRightSide = Direction.Down;
+                }
+                else if (rightWrist.transform.position.y > rightShoulder.transform.position.y + shoulderDistance * balancing
+                    && Vector2.Distance(rightWrist.transform.position, rightShoulder.transform.position) > shoulderDistance)
+                {
+                    inputDirectionRightSide = Direction.Up;
+                }
+                else if (Vector2.Distance(rightWrist.transform.position, rightShoulder.transform.position) > shoulderDistance)
+                {
+
+                    inputDirectionRightSide = Direction.Right;
+                }
             }
         }
     }
