@@ -8,6 +8,9 @@ public class MapGenerator : MonoBehaviour
     public GameObject leftPart;
     public GameObject rightPart;
     public GameObject jumpPart;
+    public GameObject mapObject;
+
+    public Vector3 moveBack = new Vector3(0, 0, 0.1f);
 
     private long seed;
     private List<GameObject> map;
@@ -40,6 +43,7 @@ public class MapGenerator : MonoBehaviour
         {
             GameObject part = GameObject.Instantiate(giveRandomMapPart());
             part.transform.position = new Vector3(0, 0, 100 * i);
+            part.transform.parent = mapObject.transform;
             map.Add(part);
         }
     }
@@ -47,6 +51,26 @@ public class MapGenerator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        GameObject toRemove = null;
+        foreach (GameObject part in map)
+        {
+            if (part.transform.position.z == -100)
+            {
+                toRemove = part;
+            }
+            else
+            {
+                part.transform.position = part.transform.position - moveBack;
+            }
+        }
+        if (toRemove != null)
+        {
+            map.Remove(toRemove);
+            Destroy(toRemove);
+            GameObject part = GameObject.Instantiate(giveRandomMapPart());
+            part.transform.position = new Vector3(0, 0, map[8].transform.position.z + 100);
+            part.transform.parent = mapObject.transform;
+            map.Add(part);
+        }
     }
 }
