@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public InputController inputController;
+    public MapGenerator mapGenerator;
     private float timer;
     public float movementBlockTime = 0.5f;
     public float force = 1f;
@@ -42,9 +43,17 @@ public class PlayerController : MonoBehaviour
         gameObject.transform.position = new Vector3(128f, 70.97f, -5f);
     }
 
+    bool isInMovingZone()
+    {
+        List<GameObject> map = mapGenerator.getMap();
+        float movingZoneStart = map[0].transform.Find("LeftPole").transform.position.z;
+        float movingZoneEnd = map[0].transform.Find("Obstacle").transform.position.z;
+        return gameObject.transform.position.z > movingZoneStart && gameObject.transform.position.z < movingZoneEnd;
+    }
+
     void Update()
     {
-        if (!isMoving)
+        if (!isMoving && isInMovingZone())
         {
             if (inputController.inputDirectionLeftSide == InputController.Direction.Up
             && inputController.inputDirectionRightSide == InputController.Direction.Up)

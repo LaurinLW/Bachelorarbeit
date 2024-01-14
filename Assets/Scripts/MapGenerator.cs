@@ -17,6 +17,11 @@ public class MapGenerator : MonoBehaviour
 
     public int conLength = 10;
 
+    public List<GameObject> getMap()
+    {
+        return map;
+    }
+
     GameObject giveRandomMapPart()
     {
         switch (UnityEngine.Random.Range(0, 3))
@@ -54,7 +59,7 @@ public class MapGenerator : MonoBehaviour
         GameObject toRemove = null;
         foreach (GameObject part in map)
         {
-            if (part.transform.position.z == -100)
+            if (part.transform.position.z < -100)
             {
                 toRemove = part;
             }
