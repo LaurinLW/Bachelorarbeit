@@ -48,7 +48,10 @@ public class PlayerController : MonoBehaviour
         List<GameObject> map = mapGenerator.getMap();
         float movingZoneStart = map[0].transform.Find("LeftPole").transform.position.z;
         float movingZoneEnd = map[0].transform.Find("Obstacle").transform.position.z;
-        return gameObject.transform.position.z > movingZoneStart && gameObject.transform.position.z < movingZoneEnd;
+        float movingZoneTwoStart = map[0].transform.Find("LeftPoleTwo").transform.position.z;
+        float movingZoneTwoEnd = map[0].transform.Find("ObstacleTwo").transform.position.z;
+        return (gameObject.transform.position.z > movingZoneStart && gameObject.transform.position.z < movingZoneEnd) ||
+        (gameObject.transform.position.z > movingZoneTwoStart && gameObject.transform.position.z < movingZoneTwoEnd);
     }
 
     void Update()
