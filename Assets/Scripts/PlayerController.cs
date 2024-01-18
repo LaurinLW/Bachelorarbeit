@@ -7,16 +7,20 @@ public class PlayerController : MonoBehaviour
     public InputController inputController;
     public MapGenerator mapGenerator;
     private float timer;
-    public float movementBlockTime = 0.5f;
-    public float force = 1f;
+    public float movementBlockTime = 1.5f;
+    public float force = 2f;
 
     private bool isMoving = false;
-    private Vector3 right = new Vector3(2, 0, 0);
-    private Vector3 left = new Vector3(-2, 0, 0);
-    private Vector3 up = new Vector3(0, 1.5f, 0);
+    private Vector3 right = new Vector3(1, 0, 0);
+    private Vector3 left = new Vector3(-1, 0, 0);
+    private Vector3 up = new Vector3(0, 1f, 0);
+
+    private Animator anim;
+    private bool leftRight;
 
     void Jump()
     {
+        anim.SetInteger("AnimationPar", 2);
         gameObject.GetComponent<Rigidbody>().AddForce(up * force, ForceMode.Impulse);
         isMoving = true;
         StartCoroutine(CooldownRoutine());
@@ -25,7 +29,6 @@ public class PlayerController : MonoBehaviour
     void Left()
     {
         gameObject.GetComponent<Rigidbody>().AddForce(left * force, ForceMode.Impulse);
-        StartCoroutine(MoveBack());
         isMoving = true;
         StartCoroutine(CooldownRoutine());
     }
@@ -33,14 +36,15 @@ public class PlayerController : MonoBehaviour
     void Right()
     {
         gameObject.GetComponent<Rigidbody>().AddForce(right * force, ForceMode.Impulse);
-        StartCoroutine(MoveBack());
         isMoving = true;
         StartCoroutine(CooldownRoutine());
     }
 
     void Start()
     {
-        gameObject.transform.position = new Vector3(128f, 70.97f, -5f);
+        gameObject.transform.position = new Vector3(128f, 71f, -5f);
+        anim = gameObject.GetComponentInChildren<Animator>();
+        anim.SetInteger("AnimationPar", 1);
     }
 
     bool isInMovingZone()
@@ -67,12 +71,19 @@ public class PlayerController : MonoBehaviour
             && inputController.inputDirectionRightSide == InputController.Direction.Down)
             {
                 Left();
+                leftRight = true;
             }
             else if (inputController.inputDirectionLeftSide == InputController.Direction.Down
             && inputController.inputDirectionRightSide == InputController.Direction.Right)
             {
                 Right();
+                leftRight = true;
             }
+        }
+        if (!isMoving && leftRight)
+        {
+            MoveBack();
+            leftRight = false;
         }
     }
 
@@ -81,15 +92,13 @@ public class PlayerController : MonoBehaviour
         while (isMoving)
         {
             yield return new WaitForSeconds(movementBlockTime);
-
+            anim.SetInteger("AnimationPar", 1);
             isMoving = false;
         }
     }
 
-    private IEnumerator MoveBack()
+    private void MoveBack()
     {
-        yield return new WaitForSeconds(movementBlockTime / 2);
-
         if (gameObject.transform.position.x < 128)
         {
             gameObject.GetComponent<Rigidbody>().AddForce(right * force, ForceMode.Impulse);
