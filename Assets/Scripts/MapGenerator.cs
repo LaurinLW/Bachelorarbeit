@@ -10,7 +10,7 @@ public class MapGenerator : MonoBehaviour
     public GameObject jumpPart;
     public GameObject mapObject;
 
-    public Vector3 moveBack = new Vector3(0, 0, 0.1f);
+    public Vector3 moveBack = new Vector3(0, 0, 0.3f);
 
     private long seed;
     private List<GameObject> map;

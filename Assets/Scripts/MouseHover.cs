@@ -20,22 +20,30 @@ public class MouseHover : MonoBehaviour
         this.GetComponent<TextMeshPro>().color = Color.black;
     }
 
-    public GameObject parent;
+    public GameObject menu;
+    public GameObject settings;
+
+    public GameStateManager gameManager;
     void OnMouseUp()
     {
         if (this.GetComponent<TextMeshPro>().text == "Play")
         {
-            parent.SetActive(false);
+            menu.SetActive(false);
+            gameManager.exec();
         }
         else if (this.GetComponent<TextMeshPro>().text == "Settings")
         {
-            Debug.Log("sett");
-
+            menu.SetActive(false);
+            settings.SetActive(true);
         }
         else if (this.GetComponent<TextMeshPro>().text == "Quit")
         {
-            Debug.Log("ex");
-
+            Application.Quit();
+        }
+        else if (this.GetComponent<TextMeshPro>().text == "Quit Settings")
+        {
+            menu.SetActive(true);
+            settings.SetActive(false);
         }
     }
 }

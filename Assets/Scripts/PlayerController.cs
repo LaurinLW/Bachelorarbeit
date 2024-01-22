@@ -58,6 +58,14 @@ public class PlayerController : MonoBehaviour
         (gameObject.transform.position.z > movingZoneTwoStart && gameObject.transform.position.z < movingZoneTwoEnd);
     }
 
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.name == "Obstacle" || collision.gameObject.name == "ObstacleTwo")
+        {
+            Debug.Log("TODO: collision");
+        }
+    }
+
     void Update()
     {
         if (!isMoving && isInMovingZone())
@@ -67,14 +75,14 @@ public class PlayerController : MonoBehaviour
             {
                 Jump();
             }
-            else if (inputController.inputDirectionLeftSide == InputController.Direction.Left
-            && inputController.inputDirectionRightSide == InputController.Direction.Down)
+            else if (inputController.inputDirectionLeftSide == InputController.Direction.Left)
+            //&& inputController.inputDirectionRightSide == InputController.Direction.Down)
             {
                 Left();
                 leftRight = true;
             }
-            else if (inputController.inputDirectionLeftSide == InputController.Direction.Down
-            && inputController.inputDirectionRightSide == InputController.Direction.Right)
+            else if (//inputController.inputDirectionLeftSide == InputController.Direction.Down && 
+            inputController.inputDirectionRightSide == InputController.Direction.Right)
             {
                 Right();
                 leftRight = true;
