@@ -21,6 +21,8 @@ public class PlayerController : MonoBehaviour
 
     public GameObject gameOver;
 
+    public AudioSource hurt;
+
     public bool juicy;
 
     void Jump()
@@ -175,16 +177,25 @@ public class PlayerController : MonoBehaviour
             isMoving = false;
         }
     }
-
     private IEnumerator Freeze()
     {
         while (freezed)
         {
+            if (juicy)
+            {
+                hurt.Play(0);
+                anim.SetInteger("AnimationPar", 3);
+            }
             restoreSpeed = mapGenerator.moveBack;
             yield return new WaitForSeconds(freezeTime * 0.1f);
             mapGenerator.moveBack = new Vector3(0, 0, 0);
             yield return new WaitForSeconds(freezeTime * 0.9f);
-            mapGenerator.moveBack = restoreSpeed;
+            anim.SetInteger("AnimationPar", 1);
+            Vector3 addUp = new Vector3(0, 0, 0.002f);
+            for (; mapGenerator.moveBack.z < restoreSpeed.z; mapGenerator.moveBack += addUp)
+            {
+                yield return new WaitForSeconds(0.01f);
+            }
             freezed = false;
         }
     }

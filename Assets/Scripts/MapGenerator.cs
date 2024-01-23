@@ -20,6 +20,8 @@ public class MapGenerator : MonoBehaviour
     public GameObject score;
     public float scoreValue = 0;
 
+    public Vector3 maxSpeed = new Vector3(0,0, 10f); 
+
     public List<GameObject> getMap()
     {
         return map;
@@ -60,7 +62,7 @@ public class MapGenerator : MonoBehaviour
     {
         scoreValue += moveBack.z;
         score.GetComponent<TextMeshProUGUI>().text = scoreValue.ToString("0");
-        if (((int)scoreValue) % 100 == 0 && moveBack.z > 0) moveBack = moveBack + new Vector3(0, 0, 0.01f);
+        if (((int)scoreValue) % 100 == 0 && moveBack.z > 0 && moveBack.z < maxSpeed.z) moveBack = moveBack + new Vector3(0, 0, 0.01f);
     }
 
     public void restart()
