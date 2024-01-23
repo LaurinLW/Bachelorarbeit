@@ -18,6 +18,8 @@ public class PlayerController : MonoBehaviour
     private Animator anim;
     private bool leftRight;
 
+    public GameObject gameOver;
+
     void Jump()
     {
         anim.SetInteger("AnimationPar", 2);
@@ -62,7 +64,31 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.name == "Obstacle" || collision.gameObject.name == "ObstacleTwo")
         {
-            Debug.Log("TODO: collision");
+            if (collision.gameObject.tag == "left")
+            {
+                if (inputController.leftPercent < 90f)
+                {
+                    gameOver.SetActive(true);
+                    mapGenerator.moveBack = new Vector3(0, 0, 0);
+                }
+            }
+            if (collision.gameObject.tag == "right")
+            {
+                if (inputController.rightPercent < 90f)
+                {
+                    gameOver.SetActive(true);
+                    mapGenerator.moveBack = new Vector3(0, 0, 0);
+                }
+            }
+            if (collision.gameObject.tag == "jump")
+            {
+                if (!(inputController.inputDirectionLeftSide == InputController.Direction.Up
+                && inputController.inputDirectionRightSide == InputController.Direction.Up))
+                {
+                    gameOver.SetActive(true);
+                    mapGenerator.moveBack = new Vector3(0, 0, 0);
+                }
+            }
         }
     }
 

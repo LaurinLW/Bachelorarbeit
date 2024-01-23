@@ -27,6 +27,12 @@ public class InputController : MonoBehaviour
     public Direction inputDirectionLeftSide = Direction.Down;
     public Direction inputDirectionRightSide = Direction.Down;
 
+    [Range(0.0f, 100f)]
+    public float leftPercent = 0;
+    [Range(0.0f, 100f)]
+    public float rightPercent = 0;
+
+
     [Tooltip("Balance the amount of effort for the direction")]
     [Range(0.5f, 1f)]
     public float balancing = 0.5f;
@@ -61,6 +67,29 @@ public class InputController : MonoBehaviour
         return leftWristMeshRenderer.enabled && leftShoulderMeshRenderer.enabled && rightWristMeshRenderer.enabled && rightShoulderMeshRenderer.enabled;
     }
 
+    void updatePercentage(float shoulderDistance)
+    {   //0% -> schulter - schulterdistance
+        if (leftWrist.transform.position.y < leftShoulder.transform.position.y)
+        {
+            leftPercent = ((leftWrist.transform.position.y) / leftShoulder.transform.position.y) * 100;
+        }
+        else
+        {
+            leftPercent = 100 - ((leftWrist.transform.position.y - leftShoulder.transform.position.y) / leftShoulder.transform.position.y) * 100;
+        }
+        if (rightWrist.transform.position.y < rightShoulder.transform.position.y)
+        {
+            rightPercent = ((rightWrist.transform.position.y) / rightShoulder.transform.position.y) * 100;
+        }
+        else
+        {
+            rightPercent = 100 - ((rightWrist.transform.position.y - rightShoulder.transform.position.y) / rightShoulder.transform.position.y) * 100;
+        }
+
+        if (leftPercent < 0) leftPercent *= -1;
+        if (rightPercent < 0) rightPercent *= -1;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -74,7 +103,9 @@ public class InputController : MonoBehaviour
             if (allActivated())
             {
                 float shoulderDistance = Mathf.Abs(leftShoulder.transform.position.x - rightShoulder.transform.position.x) / 2;
-                //TODO: hand is down, up , left or right -> slidebar to adjust some sort of difficulty?
+
+                updatePercentage(shoulderDistance);
+
                 if (leftWrist.transform.position.y < leftShoulder.transform.position.y - shoulderDistance * balancing
                     && Vector2.Distance(leftWrist.transform.position, leftShoulder.transform.position) > shoulderDistance)
                 {

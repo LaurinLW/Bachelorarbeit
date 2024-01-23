@@ -22,6 +22,8 @@ public class MouseHover : MonoBehaviour
 
     public GameObject menu;
     public GameObject settings;
+    public GameObject score;
+    public GameObject gameOver;
 
     public GameStateManager gameManager;
     void OnMouseUp()
@@ -30,6 +32,7 @@ public class MouseHover : MonoBehaviour
         {
             menu.SetActive(false);
             gameManager.exec();
+            score.SetActive(true);
         }
         else if (this.GetComponent<TextMeshPro>().text == "Settings")
         {
@@ -44,6 +47,12 @@ public class MouseHover : MonoBehaviour
         {
             menu.SetActive(true);
             settings.SetActive(false);
+        }
+        else if (this.GetComponent<TextMeshPro>().text == "Restart")
+        {
+            menu.SetActive(false);
+            gameManager.restart();
+            score.SetActive(true);
         }
     }
 }

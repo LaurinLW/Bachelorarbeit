@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using TMPro;
 
 public class MapGenerator : MonoBehaviour
 {
@@ -16,6 +17,8 @@ public class MapGenerator : MonoBehaviour
     private List<GameObject> map;
 
     public int conLength = 10;
+    public GameObject score;
+    public float scoreValue = 0;
 
     public List<GameObject> getMap()
     {
@@ -53,10 +56,37 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    void updateScore()
+    {
+        scoreValue += moveBack.z;
+        score.GetComponent<TextMeshProUGUI>().text = scoreValue.ToString("0");
+        if (((int)scoreValue) % 100 == 0 && moveBack.z > 0) moveBack = moveBack + new Vector3(0, 0, 0.01f);
+    }
+
+    public void restart()
+    {
+        DateTime currentDateTime = DateTime.Now;
+        seed = currentDateTime.Ticks;
+        UnityEngine.Random.InitState((int)seed);
+        foreach (GameObject part in map)
+        {
+            Destroy(part);
+        }
+        map.Clear();
+        for (int i = 0; i < conLength; i++)
+        {
+            GameObject part = GameObject.Instantiate(giveRandomMapPart());
+            part.transform.position = new Vector3(0, 0, 100 * i);
+            part.transform.parent = mapObject.transform;
+            map.Add(part);
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
         GameObject toRemove = null;
+        updateScore();
         foreach (GameObject part in map)
         {
             if (part.transform.position.z < -100)
