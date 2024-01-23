@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     public MapGenerator mapGenerator;
     private float timer;
     public float movementBlockTime = 1.5f;
+    public float freezeTime = 4f;
     public float force = 2f;
 
     private bool isMoving = false;
@@ -19,6 +20,8 @@ public class PlayerController : MonoBehaviour
     private bool leftRight;
 
     public GameObject gameOver;
+
+    public bool juicy;
 
     void Jump()
     {
@@ -47,6 +50,8 @@ public class PlayerController : MonoBehaviour
         gameObject.transform.position = new Vector3(128f, 71f, -5f);
         anim = gameObject.GetComponentInChildren<Animator>();
         anim.SetInteger("AnimationPar", 1);
+        juicy = true;
+        AudioListener.volume = 0.1f;
     }
 
     bool isInMovingZone()
@@ -60,6 +65,9 @@ public class PlayerController : MonoBehaviour
         (gameObject.transform.position.z > movingZoneTwoStart && gameObject.transform.position.z < movingZoneTwoEnd);
     }
 
+    private Vector3 restoreSpeed;
+    private bool freezed;
+
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.name == "Obstacle" || collision.gameObject.name == "ObstacleTwo")
@@ -71,6 +79,11 @@ public class PlayerController : MonoBehaviour
                     gameOver.SetActive(true);
                     mapGenerator.moveBack = new Vector3(0, 0, 0);
                 }
+                else
+                {
+                    freezed = true;
+                    StartCoroutine(Freeze());
+                }
             }
             if (collision.gameObject.tag == "right")
             {
@@ -79,41 +92,73 @@ public class PlayerController : MonoBehaviour
                     gameOver.SetActive(true);
                     mapGenerator.moveBack = new Vector3(0, 0, 0);
                 }
+                else
+                {
+                    freezed = true;
+                    StartCoroutine(Freeze());
+                }
             }
             if (collision.gameObject.tag == "jump")
             {
                 if (!(inputController.inputDirectionLeftSide == InputController.Direction.Up
-                && inputController.inputDirectionRightSide == InputController.Direction.Up))
+                || inputController.inputDirectionRightSide == InputController.Direction.Up))
                 {
                     gameOver.SetActive(true);
                     mapGenerator.moveBack = new Vector3(0, 0, 0);
                 }
+                else
+                {
+                    freezed = true;
+                    StartCoroutine(Freeze());
+                }
             }
         }
+    }
+    string nextMove()
+    {
+        List<GameObject> map = mapGenerator.getMap();
+        float movingZoneStart = map[0].transform.Find("LeftPole").transform.position.z;
+        float movingZoneEnd = map[0].transform.Find("Obstacle").transform.position.z;
+        float movingZoneTwoStart = map[0].transform.Find("LeftPoleTwo").transform.position.z;
+        float movingZoneTwoEnd = map[0].transform.Find("ObstacleTwo").transform.position.z;
+        if (gameObject.transform.position.z > movingZoneStart && gameObject.transform.position.z < movingZoneEnd)
+        {
+            return map[0].transform.Find("Obstacle").tag;
+        }
+        if (gameObject.transform.position.z > movingZoneTwoStart && gameObject.transform.position.z < movingZoneTwoEnd)
+        {
+            return map[0].transform.Find("ObstacleTwo").tag;
+        }
+        return "";
     }
 
     void Update()
     {
-        if (!isMoving && isInMovingZone())
+        if (!isMoving && isInMovingZone() && nextMove() == "jump")
         {
             if (inputController.inputDirectionLeftSide == InputController.Direction.Up
             && inputController.inputDirectionRightSide == InputController.Direction.Up)
             {
                 Jump();
             }
-            else if (inputController.inputDirectionLeftSide == InputController.Direction.Left)
-            //&& inputController.inputDirectionRightSide == InputController.Direction.Down)
+        }
+        else if (!isMoving && isInMovingZone() && nextMove() == "left")
+        {
+            if (inputController.inputDirectionLeftSide == InputController.Direction.Left)
             {
                 Left();
                 leftRight = true;
             }
-            else if (//inputController.inputDirectionLeftSide == InputController.Direction.Down && 
-            inputController.inputDirectionRightSide == InputController.Direction.Right)
+        }
+        else if (!isMoving && isInMovingZone() && nextMove() == "right")
+        {
+            if (inputController.inputDirectionRightSide == InputController.Direction.Right)
             {
                 Right();
                 leftRight = true;
             }
         }
+
         if (!isMoving && leftRight)
         {
             MoveBack();
@@ -128,6 +173,19 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForSeconds(movementBlockTime);
             anim.SetInteger("AnimationPar", 1);
             isMoving = false;
+        }
+    }
+
+    private IEnumerator Freeze()
+    {
+        while (freezed)
+        {
+            restoreSpeed = mapGenerator.moveBack;
+            yield return new WaitForSeconds(freezeTime * 0.1f);
+            mapGenerator.moveBack = new Vector3(0, 0, 0);
+            yield return new WaitForSeconds(freezeTime * 0.9f);
+            mapGenerator.moveBack = restoreSpeed;
+            freezed = false;
         }
     }
 

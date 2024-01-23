@@ -68,7 +68,7 @@ public class InputController : MonoBehaviour
     }
 
     void updatePercentage(float shoulderDistance)
-    {   //0% -> schulter - schulterdistance
+    {
         if (leftWrist.transform.position.y < leftShoulder.transform.position.y)
         {
             leftPercent = ((leftWrist.transform.position.y) / leftShoulder.transform.position.y) * 100;
