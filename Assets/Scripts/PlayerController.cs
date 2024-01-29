@@ -23,8 +23,14 @@ public class PlayerController : MonoBehaviour
 
     public AudioSource hurt;
 
-    public bool juicy;
+    public ParticleSystem smoke;
 
+    public GameObject angryLeft;
+    public GameObject angryRight;
+
+
+    public bool juicy;
+    private bool stop;
     void Jump()
     {
         anim.SetInteger("AnimationPar", 2);
@@ -37,14 +43,18 @@ public class PlayerController : MonoBehaviour
     {
         gameObject.GetComponent<Rigidbody>().AddForce(left * force, ForceMode.Impulse);
         isMoving = true;
+        stop = false;
         StartCoroutine(CooldownRoutine());
+        StartCoroutine(StopLeft());
     }
 
     void Right()
     {
         gameObject.GetComponent<Rigidbody>().AddForce(right * force, ForceMode.Impulse);
         isMoving = true;
+        stop = false;
         StartCoroutine(CooldownRoutine());
+        StartCoroutine(StopRight());
     }
 
     void Start()
@@ -54,6 +64,9 @@ public class PlayerController : MonoBehaviour
         anim.SetInteger("AnimationPar", 1);
         juicy = true;
         AudioListener.volume = 0.1f;
+        smoke.Stop();
+        angryLeft.SetActive(false);
+        angryRight.SetActive(false);
     }
 
     bool isInMovingZone()
@@ -72,6 +85,11 @@ public class PlayerController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
+        if (juicy)
+        {
+            smoke.Play();
+            StartCoroutine(Angry());
+        }
         if (collision.gameObject.name == "Obstacle" || collision.gameObject.name == "ObstacleTwo")
         {
             if (collision.gameObject.tag == "left")
@@ -177,6 +195,58 @@ public class PlayerController : MonoBehaviour
             isMoving = false;
         }
     }
+
+    private IEnumerator Angry()
+    {
+        angryLeft.SetActive(true);
+        angryRight.SetActive(true);
+        yield return new WaitForSeconds(freezeTime);
+        angryLeft.SetActive(false);
+        angryRight.SetActive(false);
+    }
+
+    private IEnumerator StopLeft()
+    {
+        while (!stop)
+        {
+            while (gameObject.transform.position.x >= 124)
+            {
+                yield return new WaitForSeconds(0.01f);
+            }
+            gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
+            gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+            stop = true;
+        }
+    }
+
+    private IEnumerator StopRight()
+    {
+        while (!stop)
+        {
+            while (gameObject.transform.position.x <= 132)
+            {
+                yield return new WaitForSeconds(0.01f);
+            }
+            gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
+            gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+            stop = true;
+        }
+    }
+
+    private IEnumerator StopMiddle()
+    {
+        while (!stop)
+        {
+            while (gameObject.transform.position.x <= 127 && gameObject.transform.position.x >= 129)
+            {
+                yield return new WaitForSeconds(0.01f);
+            }
+            gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+            stop = true;
+        }
+    }
+
     private IEnumerator Freeze()
     {
         while (freezed)
@@ -205,10 +275,14 @@ public class PlayerController : MonoBehaviour
         if (gameObject.transform.position.x < 128)
         {
             gameObject.GetComponent<Rigidbody>().AddForce(right * force, ForceMode.Impulse);
+            stop = false;
+            StartCoroutine(StopMiddle());
         }
         else
         {
             gameObject.GetComponent<Rigidbody>().AddForce(left * force, ForceMode.Impulse);
+            stop = false;
+            StartCoroutine(StopMiddle());
         }
     }
 }

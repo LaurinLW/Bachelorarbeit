@@ -62,7 +62,7 @@ public class MapGenerator : MonoBehaviour
     {
         scoreValue += moveBack.z;
         score.GetComponent<TextMeshProUGUI>().text = scoreValue.ToString("0");
-        if (((int)scoreValue) % 100 == 0 && moveBack.z > 0 && moveBack.z < maxSpeed.z) moveBack = moveBack + new Vector3(0, 0, 0.01f);
+        if (((int)scoreValue) % 300 == 0 && moveBack.z > 0 && moveBack.z < maxSpeed.z) moveBack = moveBack + new Vector3(0, 0, 0.01f);
     }
 
     public void restart()
