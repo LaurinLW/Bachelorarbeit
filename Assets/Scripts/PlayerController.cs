@@ -12,8 +12,8 @@ public class PlayerController : MonoBehaviour
     public float force = 2f;
 
     private bool isMoving = false;
-    private Vector3 right = new Vector3(1, 0, 0);
-    private Vector3 left = new Vector3(-1, 0, 0);
+    private Vector3 right = new Vector3(2, 0, 0);
+    private Vector3 left = new Vector3(-2, 0, 0);
     private Vector3 up = new Vector3(0, 1f, 0);
 
     private Animator anim;
@@ -210,10 +210,7 @@ public class PlayerController : MonoBehaviour
     {
         while (!stop)
         {
-            while (gameObject.transform.position.x >= 124)
-            {
-                yield return new WaitForSeconds(0.01f);
-            }
+            yield return new WaitForSeconds(0.35f);
             gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
             gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
             stop = true;
@@ -224,10 +221,7 @@ public class PlayerController : MonoBehaviour
     {
         while (!stop)
         {
-            while (gameObject.transform.position.x <= 132)
-            {
-                yield return new WaitForSeconds(0.01f);
-            }
+            yield return new WaitForSeconds(0.35f);
             gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
             gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
             stop = true;
@@ -238,10 +232,7 @@ public class PlayerController : MonoBehaviour
     {
         while (!stop)
         {
-            while (gameObject.transform.position.x <= 127 && gameObject.transform.position.x >= 129)
-            {
-                yield return new WaitForSeconds(0.01f);
-            }
+            yield return new WaitForSeconds(0.35f);
             gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
             gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
             stop = true;
