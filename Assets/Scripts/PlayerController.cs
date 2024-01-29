@@ -85,13 +85,13 @@ public class PlayerController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (juicy)
-        {
-            smoke.Play();
-            StartCoroutine(Angry());
-        }
         if (collision.gameObject.name == "Obstacle" || collision.gameObject.name == "ObstacleTwo")
         {
+            if (juicy)
+            {
+                smoke.Play();
+                StartCoroutine(Angry());
+            }
             if (collision.gameObject.tag == "left")
             {
                 if (inputController.leftPercent < 90f)
@@ -198,9 +198,10 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator Angry()
     {
+        yield return new WaitForSeconds(freezeTime * 0.1f);
         angryLeft.SetActive(true);
         angryRight.SetActive(true);
-        yield return new WaitForSeconds(freezeTime);
+        yield return new WaitForSeconds(freezeTime * 0.9f);
         angryLeft.SetActive(false);
         angryRight.SetActive(false);
     }
