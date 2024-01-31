@@ -11,6 +11,8 @@ public class MapGenerator : MonoBehaviour
     public GameObject jumpPart;
     public GameObject mapObject;
 
+    public GameObject tutorialPart;
+
     public Vector3 moveBack = new Vector3(0, 0, 0.3f);
 
     private long seed;
@@ -20,7 +22,7 @@ public class MapGenerator : MonoBehaviour
     public GameObject score;
     public float scoreValue = 0;
 
-    public Vector3 maxSpeed = new Vector3(0,0, 10f); 
+    public Vector3 maxSpeed = new Vector3(0, 0, 10f);
 
     public List<GameObject> getMap()
     {
@@ -49,10 +51,14 @@ public class MapGenerator : MonoBehaviour
         seed = currentDateTime.Ticks;
         UnityEngine.Random.InitState((int)seed);
         map = new List<GameObject>();
+        GameObject tutorial = GameObject.Instantiate(tutorialPart);
+        tutorial.transform.position = new Vector3(0, 0, 0);
+        tutorial.transform.parent = mapObject.transform;
+        map.Add(tutorial);
         for (int i = 0; i < conLength; i++)
         {
             GameObject part = GameObject.Instantiate(giveRandomMapPart());
-            part.transform.position = new Vector3(0, 0, 100 * i);
+            part.transform.position = new Vector3(0, 0, 100 * i + 150);
             part.transform.parent = mapObject.transform;
             map.Add(part);
         }
@@ -75,10 +81,14 @@ public class MapGenerator : MonoBehaviour
             Destroy(part);
         }
         map.Clear();
+        GameObject tutorial = GameObject.Instantiate(tutorialPart);
+        tutorial.transform.position = new Vector3(0, 0, 0);
+        tutorial.transform.parent = mapObject.transform;
+        map.Add(tutorial);
         for (int i = 0; i < conLength; i++)
         {
             GameObject part = GameObject.Instantiate(giveRandomMapPart());
-            part.transform.position = new Vector3(0, 0, 100 * i);
+            part.transform.position = new Vector3(0, 0, 100 * i + 150);
             part.transform.parent = mapObject.transform;
             map.Add(part);
         }
@@ -91,7 +101,7 @@ public class MapGenerator : MonoBehaviour
         updateScore();
         foreach (GameObject part in map)
         {
-            if (part.transform.position.z < -100)
+            if (part.transform.position.z < -150)
             {
                 toRemove = part;
             }
