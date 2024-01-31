@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class PlayerController : MonoBehaviour
 {
@@ -12,9 +13,8 @@ public class PlayerController : MonoBehaviour
     public float force = 2f;
 
     private bool isMoving = false;
-    private Vector3 right = new Vector3(2, 0, 0);
-    private Vector3 left = new Vector3(-2, 0, 0);
-    private Vector3 up = new Vector3(0, 1f, 0);
+    private Vector3 leftRightVector = new Vector3(2f, 0, 0);
+    private Vector3 up = new Vector3(0, 1.0625f, 0);
 
     private Animator anim;
     private bool leftRight;
@@ -27,8 +27,7 @@ public class PlayerController : MonoBehaviour
 
     public GameObject angryLeft;
     public GameObject angryRight;
-
-
+    public GameObject stars;
     public bool juicy;
     private bool stop;
     void Jump()
@@ -41,7 +40,7 @@ public class PlayerController : MonoBehaviour
 
     void Left()
     {
-        gameObject.GetComponent<Rigidbody>().AddForce(left * force, ForceMode.Impulse);
+        gameObject.GetComponent<Rigidbody>().AddForce(-leftRightVector * force, ForceMode.Impulse);
         isMoving = true;
         stop = false;
         StartCoroutine(CooldownRoutine());
@@ -50,7 +49,7 @@ public class PlayerController : MonoBehaviour
 
     void Right()
     {
-        gameObject.GetComponent<Rigidbody>().AddForce(right * force, ForceMode.Impulse);
+        gameObject.GetComponent<Rigidbody>().AddForce(leftRightVector * force, ForceMode.Impulse);
         isMoving = true;
         stop = false;
         StartCoroutine(CooldownRoutine());
@@ -72,10 +71,16 @@ public class PlayerController : MonoBehaviour
     bool isInMovingZone()
     {
         List<GameObject> map = mapGenerator.getMap();
-        float movingZoneStart = map[0].transform.Find("LeftPole").transform.position.z;
-        float movingZoneEnd = map[0].transform.Find("Obstacle").transform.position.z;
-        float movingZoneTwoStart = map[0].transform.Find("LeftPoleTwo").transform.position.z;
-        float movingZoneTwoEnd = map[0].transform.Find("ObstacleTwo").transform.position.z;
+        int mapPart = 0;
+        while (map[mapPart].transform.Find("Obstacle").transform.position.z < gameObject.transform.position.z &&
+         map[mapPart].transform.Find("ObstacleTwo").transform.position.z < gameObject.transform.position.z)
+        {
+            mapPart = mapPart + 1;
+        }
+        float movingZoneStart = map[mapPart].transform.Find("LeftPole").transform.position.z;
+        float movingZoneEnd = map[mapPart].transform.Find("Obstacle").transform.position.z;
+        float movingZoneTwoStart = map[mapPart].transform.Find("LeftPoleTwo").transform.position.z;
+        float movingZoneTwoEnd = map[mapPart].transform.Find("ObstacleTwo").transform.position.z;
         return (gameObject.transform.position.z > movingZoneStart && gameObject.transform.position.z < movingZoneEnd) ||
         (gameObject.transform.position.z > movingZoneTwoStart && gameObject.transform.position.z < movingZoneTwoEnd);
     }
@@ -137,17 +142,23 @@ public class PlayerController : MonoBehaviour
     string nextMove()
     {
         List<GameObject> map = mapGenerator.getMap();
-        float movingZoneStart = map[0].transform.Find("LeftPole").transform.position.z;
-        float movingZoneEnd = map[0].transform.Find("Obstacle").transform.position.z;
-        float movingZoneTwoStart = map[0].transform.Find("LeftPoleTwo").transform.position.z;
-        float movingZoneTwoEnd = map[0].transform.Find("ObstacleTwo").transform.position.z;
+        int mapPart = 0;
+        while (map[mapPart].transform.Find("Obstacle").transform.position.z < gameObject.transform.position.z &&
+         map[mapPart].transform.Find("ObstacleTwo").transform.position.z < gameObject.transform.position.z)
+        {
+            mapPart = mapPart + 1;
+        }
+        float movingZoneStart = map[mapPart].transform.Find("LeftPole").transform.position.z;
+        float movingZoneEnd = map[mapPart].transform.Find("Obstacle").transform.position.z;
+        float movingZoneTwoStart = map[mapPart].transform.Find("LeftPoleTwo").transform.position.z;
+        float movingZoneTwoEnd = map[mapPart].transform.Find("ObstacleTwo").transform.position.z;
         if (gameObject.transform.position.z > movingZoneStart && gameObject.transform.position.z < movingZoneEnd)
         {
-            return map[0].transform.Find("Obstacle").tag;
+            return map[mapPart].transform.Find("Obstacle").tag;
         }
         if (gameObject.transform.position.z > movingZoneTwoStart && gameObject.transform.position.z < movingZoneTwoEnd)
         {
-            return map[0].transform.Find("ObstacleTwo").tag;
+            return map[mapPart].transform.Find("ObstacleTwo").tag;
         }
         return "";
     }
@@ -160,6 +171,10 @@ public class PlayerController : MonoBehaviour
             && inputController.inputDirectionRightSide == InputController.Direction.Up)
             {
                 Jump();
+                GameObject starsClone = GameObject.Instantiate(stars);
+                starsClone.transform.parent = gameObject.transform;
+                starsClone.transform.position = new Vector3(128, 71, -5);
+                StartCoroutine(RemoveObject(starsClone, 2.0f));
             }
         }
         else if (!isMoving && isInMovingZone() && nextMove() == "left")
@@ -168,6 +183,10 @@ public class PlayerController : MonoBehaviour
             {
                 Left();
                 leftRight = true;
+                GameObject starsClone = GameObject.Instantiate(stars);
+                starsClone.transform.parent = gameObject.transform;
+                starsClone.transform.position = new Vector3(128, 71, -5);
+                StartCoroutine(RemoveObject(starsClone, 2.0f));
             }
         }
         else if (!isMoving && isInMovingZone() && nextMove() == "right")
@@ -176,6 +195,10 @@ public class PlayerController : MonoBehaviour
             {
                 Right();
                 leftRight = true;
+                GameObject starsClone = GameObject.Instantiate(stars);
+                starsClone.transform.parent = gameObject.transform;
+                starsClone.transform.position = new Vector3(128, 71, -5);
+                StartCoroutine(RemoveObject(starsClone, 2.0f));
             }
         }
 
@@ -186,6 +209,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private IEnumerator RemoveObject(GameObject t, float time)
+    {
+        yield return new WaitForSeconds(time);
+        UnityEngine.Object.Destroy(t);
+    }
     private IEnumerator CooldownRoutine()
     {
         while (isMoving)
@@ -210,7 +238,7 @@ public class PlayerController : MonoBehaviour
     {
         while (!stop)
         {
-            yield return new WaitForSeconds(0.35f);
+            yield return new WaitForSeconds(0.325f);
             gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
             gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
             stop = true;
@@ -221,7 +249,7 @@ public class PlayerController : MonoBehaviour
     {
         while (!stop)
         {
-            yield return new WaitForSeconds(0.35f);
+            yield return new WaitForSeconds(0.325f);
             gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
             gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
             stop = true;
@@ -232,9 +260,17 @@ public class PlayerController : MonoBehaviour
     {
         while (!stop)
         {
-            yield return new WaitForSeconds(0.35f);
+            yield return new WaitForSeconds(0.325f);
             gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
             gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+            if (gameObject.transform.position.x < 128)
+            {
+                gameObject.transform.position = gameObject.transform.position + (new Vector3(128 - gameObject.transform.position.x, 0, 0));
+            }
+            else if (gameObject.transform.position.x > 128)
+            {
+                gameObject.transform.position = gameObject.transform.position - (new Vector3(Math.Abs(128 - gameObject.transform.position.x), 0, 0));
+            }
             stop = true;
         }
     }
@@ -266,13 +302,13 @@ public class PlayerController : MonoBehaviour
     {
         if (gameObject.transform.position.x < 128)
         {
-            gameObject.GetComponent<Rigidbody>().AddForce(right * force, ForceMode.Impulse);
+            gameObject.GetComponent<Rigidbody>().AddForce(leftRightVector * force, ForceMode.Impulse);
             stop = false;
             StartCoroutine(StopMiddle());
         }
         else
         {
-            gameObject.GetComponent<Rigidbody>().AddForce(left * force, ForceMode.Impulse);
+            gameObject.GetComponent<Rigidbody>().AddForce(-leftRightVector * force, ForceMode.Impulse);
             stop = false;
             StartCoroutine(StopMiddle());
         }
