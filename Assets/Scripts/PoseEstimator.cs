@@ -185,9 +185,8 @@ public class PoseEstimator : MonoBehaviour
         // Get a reference to the Main Camera GameObject
         GameObject mainCamera = GameObject.Find("Main Camera");
         // Adjust the camera position to account for updates to the VideoScreen
-        mainCamera.transform.position = new Vector3((videoDims.x / 2) * scale, (videoDims.y / 2) * scale, -10f);
+        mainCamera.transform.position = new Vector3(128, 72, -10f);
         //mainCamera.transform.position = new Vector3(videoDims.x / 2, videoDims.y / 2, -10f);
-
         // Render objects with no perspective (i.e. 2D)
         mainCamera.GetComponent<Camera>().orthographic = false;
         // Adjust the camera size to account for updates to the VideoScreen
