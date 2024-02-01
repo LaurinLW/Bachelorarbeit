@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
     public GameObject gameOver;
 
     public AudioSource hurt;
+    public AudioSource success;
 
     public ParticleSystem smoke;
 
@@ -175,6 +176,7 @@ public class PlayerController : MonoBehaviour
                 starsClone.transform.parent = gameObject.transform;
                 starsClone.transform.position = new Vector3(128, 71, -5);
                 StartCoroutine(RemoveObject(starsClone, 2.0f));
+                success.Play();
             }
         }
         else if (!isMoving && isInMovingZone() && nextMove() == "left")
@@ -187,6 +189,7 @@ public class PlayerController : MonoBehaviour
                 starsClone.transform.parent = gameObject.transform;
                 starsClone.transform.position = new Vector3(128, 71, -5);
                 StartCoroutine(RemoveObject(starsClone, 2.0f));
+                success.Play();
             }
         }
         else if (!isMoving && isInMovingZone() && nextMove() == "right")
@@ -199,6 +202,7 @@ public class PlayerController : MonoBehaviour
                 starsClone.transform.parent = gameObject.transform;
                 starsClone.transform.position = new Vector3(128, 71, -5);
                 StartCoroutine(RemoveObject(starsClone, 2.0f));
+                success.Play();
             }
         }
 
