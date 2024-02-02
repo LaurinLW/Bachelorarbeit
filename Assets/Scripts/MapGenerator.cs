@@ -107,7 +107,7 @@ public class MapGenerator : MonoBehaviour
             }
             else
             {
-                part.transform.position = part.transform.position - moveBack;
+                part.transform.position = part.transform.position - (moveBack * Time.deltaTime * 20);
             }
         }
         if (toRemove != null)

@@ -230,10 +230,10 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator Angry()
     {
-        yield return new WaitForSeconds(freezeTime * 0.1f);
+        yield return new WaitForSeconds(freezeTime * 0.2f);
         angryLeft.SetActive(true);
         angryRight.SetActive(true);
-        yield return new WaitForSeconds(freezeTime * 0.9f);
+        yield return new WaitForSeconds(freezeTime * 0.8f);
         angryLeft.SetActive(false);
         angryRight.SetActive(false);
     }
@@ -289,9 +289,10 @@ public class PlayerController : MonoBehaviour
                 anim.SetInteger("AnimationPar", 3);
             }
             restoreSpeed = mapGenerator.moveBack;
-            yield return new WaitForSeconds(freezeTime * 0.1f);
+            float diff = mapGenerator.moveBack.z > 1 ? 2 : 1;
+            yield return new WaitForSeconds(freezeTime * (0.2f / diff));
             mapGenerator.moveBack = new Vector3(0, 0, 0);
-            yield return new WaitForSeconds(freezeTime * 0.9f);
+            yield return new WaitForSeconds(freezeTime * (0.8f / diff));
             anim.SetInteger("AnimationPar", 1);
             Vector3 addUp = new Vector3(0, 0, 0.002f);
             for (; mapGenerator.moveBack.z < restoreSpeed.z; mapGenerator.moveBack += addUp)
