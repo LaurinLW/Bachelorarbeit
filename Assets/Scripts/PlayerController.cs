@@ -211,6 +211,11 @@ public class PlayerController : MonoBehaviour
             MoveBack();
             leftRight = false;
         }
+
+        if (gameObject.transform.position.y < 70)
+        {
+            gameObject.transform.position = new Vector3(gameObject.transform.position.x, 71, gameObject.transform.position.z);
+        }
     }
 
     private IEnumerator RemoveObject(GameObject t, float time)
