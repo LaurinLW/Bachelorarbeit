@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
 
     private bool isMoving = false;
     private Vector3 leftRightVector = new Vector3(2f, 0, 0);
-    private Vector3 up = new Vector3(0, 1.0625f, 0);
+    private Vector3 up = new Vector3(0, 1.2f, 0);
 
     private Animator anim;
     private bool leftRight;
@@ -91,7 +91,7 @@ public class PlayerController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.name == "Obstacle" || collision.gameObject.name == "ObstacleTwo")
+        if ((collision.gameObject.name == "Obstacle" || collision.gameObject.name == "ObstacleTwo") && collision.gameObject.transform.position.z > gameObject.transform.position.z)
         {
             if (juicy)
             {
