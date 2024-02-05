@@ -12,6 +12,8 @@ public class MapGenerator : MonoBehaviour
     public GameObject mapObject;
 
     public GameObject tutorialPart;
+    public GameObject tutorialPartTwo;
+
 
     public Vector3 moveBack = new Vector3(0, 0, 0.3f);
 
@@ -22,7 +24,9 @@ public class MapGenerator : MonoBehaviour
     public GameObject score;
     public float scoreValue = 0;
 
-    public Vector3 maxSpeed = new Vector3(0, 0, 10f);
+    public Vector3 maxSpeed = new Vector3(0, 0, 1.5f);
+
+    public bool withTutorial = true;
 
     public List<GameObject> getMap()
     {
@@ -51,16 +55,33 @@ public class MapGenerator : MonoBehaviour
         seed = currentDateTime.Ticks;
         UnityEngine.Random.InitState((int)seed);
         map = new List<GameObject>();
-        GameObject tutorial = GameObject.Instantiate(tutorialPart);
-        tutorial.transform.position = new Vector3(0, 0, 0);
-        tutorial.transform.parent = mapObject.transform;
-        map.Add(tutorial);
-        for (int i = 0; i < conLength; i++)
+        if (withTutorial)
         {
-            GameObject part = GameObject.Instantiate(giveRandomMapPart());
-            part.transform.position = new Vector3(0, 0, 100 * i + 150);
-            part.transform.parent = mapObject.transform;
-            map.Add(part);
+            GameObject tutorial = GameObject.Instantiate(tutorialPart);
+            tutorial.transform.position = new Vector3(0, 0, 80);
+            tutorial.transform.parent = mapObject.transform;
+            map.Add(tutorial);
+            // GameObject tutorialTwo = GameObject.Instantiate(tutorialPartTwo);
+            // tutorialTwo.transform.position = new Vector3(0, 0, 0);
+            // tutorialTwo.transform.parent = mapObject.transform;
+            // map.Add(tutorialTwo);
+            for (int i = 0; i < conLength; i++)
+            {
+                GameObject part = GameObject.Instantiate(giveRandomMapPart());
+                part.transform.position = new Vector3(0, 0, 100 * i + 230);
+                part.transform.parent = mapObject.transform;
+                map.Add(part);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < conLength; i++)
+            {
+                GameObject part = GameObject.Instantiate(giveRandomMapPart());
+                part.transform.position = new Vector3(0, 0, 100 * i);
+                part.transform.parent = mapObject.transform;
+                map.Add(part);
+            }
         }
     }
 
@@ -81,16 +102,33 @@ public class MapGenerator : MonoBehaviour
             Destroy(part);
         }
         map.Clear();
-        GameObject tutorial = GameObject.Instantiate(tutorialPart);
-        tutorial.transform.position = new Vector3(0, 0, 0);
-        tutorial.transform.parent = mapObject.transform;
-        map.Add(tutorial);
-        for (int i = 0; i < conLength; i++)
+        if (withTutorial)
         {
-            GameObject part = GameObject.Instantiate(giveRandomMapPart());
-            part.transform.position = new Vector3(0, 0, 100 * i + 150);
-            part.transform.parent = mapObject.transform;
-            map.Add(part);
+            GameObject tutorial = GameObject.Instantiate(tutorialPart);
+            tutorial.transform.position = new Vector3(0, 0, 80);
+            tutorial.transform.parent = mapObject.transform;
+            map.Add(tutorial);
+            // GameObject tutorialTwo = GameObject.Instantiate(tutorialPartTwo);
+            // tutorialTwo.transform.position = new Vector3(0, 0, 0);
+            // tutorialTwo.transform.parent = mapObject.transform;
+            // map.Add(tutorialTwo);
+            for (int i = 0; i < conLength; i++)
+            {
+                GameObject part = GameObject.Instantiate(giveRandomMapPart());
+                part.transform.position = new Vector3(0, 0, 100 * i + 230);
+                part.transform.parent = mapObject.transform;
+                map.Add(part);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < conLength; i++)
+            {
+                GameObject part = GameObject.Instantiate(giveRandomMapPart());
+                part.transform.position = new Vector3(0, 0, 100 * i);
+                part.transform.parent = mapObject.transform;
+                map.Add(part);
+            }
         }
     }
 
