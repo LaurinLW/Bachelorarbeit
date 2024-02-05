@@ -26,7 +26,7 @@ public class MapGenerator : MonoBehaviour
 
     public Vector3 maxSpeed = new Vector3(0, 0, 1.5f);
 
-    public bool withTutorial = true;
+    public bool withTutorial;
 
     public List<GameObject> getMap()
     {
@@ -51,6 +51,7 @@ public class MapGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        withTutorial = true;
         DateTime currentDateTime = DateTime.Now;
         seed = currentDateTime.Ticks;
         UnityEngine.Random.InitState((int)seed);

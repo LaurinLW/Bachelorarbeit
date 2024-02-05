@@ -9,6 +9,8 @@ public class SettingsManager : MonoBehaviour
     public GameObject settingsPlane;
     public GameObject settingsField;
     public GameStateManager GameState;
+    public MapGenerator mapGenerator;
+
     public InputController balancing;
     private List<GameObject> settingsObjects;
 
@@ -87,6 +89,13 @@ public class SettingsManager : MonoBehaviour
         textObject.GetComponent<TextMeshProUGUI>().text = slider.GetComponent<Slider>().value.ToString();
     }
 
+    void changeTutorial(Slider slider, GameObject textObject)
+    {
+        mapGenerator.withTutorial = slider.value == 1 ? true : false;
+        mapGenerator.restart();
+        textObject.GetComponent<TextMeshProUGUI>().text = slider.GetComponent<Slider>().value.ToString();
+    }
+
     void Start()
     {
         correctPosition = false;
@@ -142,6 +151,20 @@ public class SettingsManager : MonoBehaviour
         sliderJuicy.GetComponent<Slider>().minValue = 0;
         sliderJuicy.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeJuicy(sliderJuicy.GetComponent<Slider>(), getSliderText(gameJuicy)); });
         getSliderText(gameJuicy).GetComponent<TextMeshProUGUI>().text = sliderJuicy.GetComponent<Slider>().value.ToString();
+
+        GameObject gameTutorial = GameObject.Instantiate(settingsField);
+        gameTutorial.transform.SetParent(settingsPlane.transform);
+        gameTutorial.SetActive(true);
+        getText(gameTutorial).GetComponent<TextMeshPro>().text = "Tutorial";
+        settingsObjects.Add(gameTutorial);
+        GameObject sliderTutorial = getSlider(gameTutorial);
+        sliderTutorial.GetComponent<Slider>().value = mapGenerator.withTutorial ? 1 : 0;
+        sliderTutorial.GetComponent<Slider>().wholeNumbers = true;
+        sliderTutorial.GetComponent<Slider>().maxValue = 1;
+        sliderTutorial.GetComponent<Slider>().minValue = 0;
+        sliderTutorial.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeTutorial(sliderTutorial.GetComponent<Slider>(), getSliderText(gameTutorial)); });
+        getSliderText(gameTutorial).GetComponent<TextMeshProUGUI>().text = sliderTutorial.GetComponent<Slider>().value.ToString();
+
 
         settingsField.SetActive(false);
     }
