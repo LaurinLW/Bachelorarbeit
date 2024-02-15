@@ -31,7 +31,7 @@ public class MouseHover : MonoBehaviour
         if (this.GetComponent<TextMeshPro>().text == "Play")
         {
             menu.SetActive(false);
-            gameManager.exec();
+            gameManager.restart();
             score.SetActive(true);
         }
         else if (this.GetComponent<TextMeshPro>().text == "Settings")
@@ -53,6 +53,13 @@ public class MouseHover : MonoBehaviour
             menu.SetActive(false);
             gameManager.restart();
             score.SetActive(true);
+        }
+        else if (this.GetComponent<TextMeshPro>().text == "Menu")
+        {
+            menu.SetActive(true);
+            score.SetActive(false);
+            settings.SetActive(false);
+            gameOver.SetActive(false);
         }
     }
 }
