@@ -172,19 +172,17 @@ public class SettingsManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!correctPosition)
+        if (gameObject.activeSelf)
         {
             int i = 0;
             foreach (GameObject setting in settingsObjects)
             {
                 setting.transform.position = settingsField.transform.position + new Vector3(0, -0.2f * i, 0);
                 setting.transform.rotation = settingsField.transform.rotation;
-                getSlider(setting).transform.position = getSlider(settingsField).transform.position + new Vector3(500, 0, -950 + i * 200);
-                getSliderText(setting).transform.position = getSliderText(settingsField).transform.position + new Vector3(0, 0, -945 + i * 200);
-
+                getSlider(setting).transform.position = new Vector3(Screen.width - (Screen.width * 0.25f), Screen.height - Screen.height * 0.125f - Screen.height * (0.18f * i), 0);
+                getSliderText(setting).transform.position = new Vector3(Screen.width - (Screen.width * 0.05f), Screen.height - Screen.height * 0.125f - Screen.height * (0.18f * i), 0);
                 i++;
             }
-            correctPosition = true;
         }
     }
 }
