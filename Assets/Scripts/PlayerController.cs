@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
@@ -31,6 +32,8 @@ public class PlayerController : MonoBehaviour
     public GameObject stars;
     public bool juicy;
     private bool stop;
+    public HealthManagement healthManagement;
+    private bool healthCooldown;
     void Jump()
     {
         anim.SetInteger("AnimationPar", 2);
@@ -67,6 +70,7 @@ public class PlayerController : MonoBehaviour
         smoke.Stop();
         angryLeft.SetActive(false);
         angryRight.SetActive(false);
+        healthCooldown = false;
     }
 
     bool isInMovingZone()
@@ -102,8 +106,7 @@ public class PlayerController : MonoBehaviour
             {
                 if (inputController.leftPercent < 90f)
                 {
-                    gameOver.SetActive(true);
-                    mapGenerator.moveBack = new Vector3(0, 0, 0);
+                    loseHealth();
                 }
                 else
                 {
@@ -115,8 +118,7 @@ public class PlayerController : MonoBehaviour
             {
                 if (inputController.rightPercent < 90f)
                 {
-                    gameOver.SetActive(true);
-                    mapGenerator.moveBack = new Vector3(0, 0, 0);
+                    loseHealth();
                 }
                 else
                 {
@@ -129,8 +131,7 @@ public class PlayerController : MonoBehaviour
                 if (!(inputController.inputDirectionLeftSide == InputController.Direction.Up
                 || inputController.inputDirectionRightSide == InputController.Direction.Up))
                 {
-                    gameOver.SetActive(true);
-                    mapGenerator.moveBack = new Vector3(0, 0, 0);
+                    loseHealth();
                 }
                 else
                 {
@@ -140,6 +141,26 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
+    void loseHealth()
+    {
+        if (!healthCooldown)
+        {
+            StartCoroutine(StopDamage());
+            healthManagement.damage();
+            if (healthManagement.health == 0)
+            {
+                gameOver.SetActive(true);
+                mapGenerator.moveBack = new Vector3(0, 0, 0);
+            }
+            else
+            {
+                freezed = true;
+                StartCoroutine(Freeze());
+            }
+        }
+    }
+
     string nextMove()
     {
         List<GameObject> map = mapGenerator.getMap();
@@ -263,6 +284,13 @@ public class PlayerController : MonoBehaviour
             gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
             stop = true;
         }
+    }
+
+    private IEnumerator StopDamage()
+    {
+        healthCooldown = true;
+        yield return new WaitForSeconds(0.25f);
+        healthCooldown = false;
     }
 
     private IEnumerator StopMiddle()
