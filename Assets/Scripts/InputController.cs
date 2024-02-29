@@ -102,7 +102,7 @@ public class InputController : MonoBehaviour
         {
             if (allActivated())
             {
-                float shoulderDistance = Mathf.Abs(leftShoulder.transform.position.x - rightShoulder.transform.position.x) / 2;
+                float shoulderDistance = Mathf.Abs(leftShoulder.transform.position.x - rightShoulder.transform.position.x);
 
                 updatePercentage(shoulderDistance);
 

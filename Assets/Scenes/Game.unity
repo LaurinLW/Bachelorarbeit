@@ -13353,7 +13353,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GameSpeed: 1
   mapGen: {fileID: 949182703}
-  healthManagement: {fileID: 0}
+  healthManagement: {fileID: 212480082}
 --- !u!1001 &1781238241
 PrefabInstance:
   m_ObjectHideFlags: 0
