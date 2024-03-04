@@ -34,6 +34,10 @@ public class PlayerController : MonoBehaviour
     private bool stop;
     public HealthManagement healthManagement;
     private bool healthCooldown;
+    public GameObject Flag;
+    public Material Red;
+    public Material Green;
+
     void Jump()
     {
         anim.SetInteger("AnimationPar", 2);
@@ -174,11 +178,11 @@ public class PlayerController : MonoBehaviour
         float movingZoneEnd = map[mapPart].transform.Find("Obstacle").transform.position.z;
         float movingZoneTwoStart = map[mapPart].transform.Find("LeftPoleTwo").transform.position.z;
         float movingZoneTwoEnd = map[mapPart].transform.Find("ObstacleTwo").transform.position.z;
-        if (gameObject.transform.position.z > movingZoneStart && gameObject.transform.position.z < movingZoneEnd)
+        if (gameObject.transform.position.z < movingZoneEnd)
         {
             return map[mapPart].transform.Find("Obstacle").tag;
         }
-        if (gameObject.transform.position.z > movingZoneTwoStart && gameObject.transform.position.z < movingZoneTwoEnd)
+        if (gameObject.transform.position.z < movingZoneTwoEnd)
         {
             return map[mapPart].transform.Find("ObstacleTwo").tag;
         }
@@ -187,6 +191,41 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (nextMove() == "jump")
+        {
+            if (inputController.inputDirectionLeftSide == InputController.Direction.Up
+                        && inputController.inputDirectionRightSide == InputController.Direction.Up)
+            {
+                Flag.GetComponent<MeshRenderer>().material = Green;
+            }
+            else
+            {
+                Flag.GetComponent<MeshRenderer>().material = Red;
+            }
+        }
+        else if (nextMove() == "left")
+        {
+            if (inputController.inputDirectionLeftSide == InputController.Direction.Left)
+            {
+                Flag.GetComponent<MeshRenderer>().material = Green;
+            }
+            else
+            {
+                Flag.GetComponent<MeshRenderer>().material = Red;
+            }
+        }
+        else if (nextMove() == "right")
+        {
+            if (inputController.inputDirectionRightSide == InputController.Direction.Right)
+            {
+                Flag.GetComponent<MeshRenderer>().material = Green;
+            }
+            else
+            {
+                Flag.GetComponent<MeshRenderer>().material = Red;
+            }
+        }
+
         if (!isMoving && isInMovingZone() && nextMove() == "jump")
         {
             if (inputController.inputDirectionLeftSide == InputController.Direction.Up
