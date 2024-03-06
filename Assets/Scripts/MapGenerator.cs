@@ -154,7 +154,7 @@ public class MapGenerator : MonoBehaviour
             map.Remove(toRemove);
             Destroy(toRemove);
             GameObject part = GameObject.Instantiate(giveRandomMapPart());
-            part.transform.position = new Vector3(0, 0, map[9].transform.position.z + 100);
+            part.transform.position = new Vector3(0, 0, map[map.Count - 1].transform.position.z + 100);
             part.transform.parent = mapObject.transform;
             map.Add(part);
         }
