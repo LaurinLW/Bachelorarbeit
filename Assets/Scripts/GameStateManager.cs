@@ -27,5 +27,6 @@ public class GameStateManager : MonoBehaviour
         mapGen.restart();
         mapGen.scoreValue = 0;
         healthManagement.health = 3;
+        healthManagement.Restart();
     }
 }
