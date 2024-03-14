@@ -191,6 +191,10 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (healthManagement.health == 0)
+        {
+            mapGenerator.moveBack = new Vector3(0, 0, 0);
+        }
         if (nextMove() == "jump")
         {
             if (inputController.inputDirectionLeftSide == InputController.Direction.Up
@@ -366,10 +370,10 @@ public class PlayerController : MonoBehaviour
             mapGenerator.moveBack = new Vector3(0, 0, 0);
             yield return new WaitForSeconds(freezeTime * (0.8f / diff));
             anim.SetInteger("AnimationPar", 1);
-            Vector3 addUp = new Vector3(0, 0, 0.002f);
+            Vector3 addUp = new Vector3(0, 0, (restoreSpeed.z - mapGenerator.moveBack.z) * 0.0625f);
             for (; mapGenerator.moveBack.z < restoreSpeed.z; mapGenerator.moveBack += addUp)
             {
-                yield return new WaitForSeconds(0.01f);
+                yield return new WaitForSeconds(0.25f);
             }
             freezed = false;
         }
