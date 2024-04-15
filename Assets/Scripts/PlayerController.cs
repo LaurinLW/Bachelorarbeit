@@ -14,12 +14,14 @@ public class PlayerController : MonoBehaviour
     public float force = 2f;
 
     private bool isMoving = false;
-    private Vector3 leftRightVector = new Vector3(2f, 0, 0);
+    private Vector3 left = new Vector3(124f, 70.5f, -5f);
+    private Vector3 right = new Vector3(132f, 70.5f, -5f);
+    private Vector3 middle = new Vector3(128f, 70.5f, -5f);
+
+
     private Vector3 up = new Vector3(0, 1.2f, 0);
 
     private Animator anim;
-    private bool leftRight;
-
     public GameObject gameOver;
 
     public AudioSource hurt;
@@ -33,7 +35,6 @@ public class PlayerController : MonoBehaviour
 
     public GameObject stars;
     public bool juicy;
-    private bool stop;
     public HealthManagement healthManagement;
     private bool healthCooldown;
     public GameObject Flag;
@@ -50,20 +51,57 @@ public class PlayerController : MonoBehaviour
 
     void Left()
     {
-        gameObject.GetComponent<Rigidbody>().AddForce(-leftRightVector * force, ForceMode.Impulse);
         isMoving = true;
-        stop = false;
-        StartCoroutine(CooldownRoutine());
-        StartCoroutine(StopLeft());
+        StartCoroutine(MoveLeft());
+        StartCoroutine(MoveMiddle());
+    }
+    private IEnumerator MoveLeft()
+    {
+        Vector3 origPos = gameObject.transform.position;
+        float totalMovementTime = 1f;
+        float currentMovementTime = 0f;
+        while (Vector3.Distance(gameObject.transform.position, left) > 0.1f && anim.applyRootMotion)
+        {
+            currentMovementTime += Time.deltaTime;
+            gameObject.transform.position = Vector3.Lerp(origPos, left, currentMovementTime / totalMovementTime);
+            yield return null;
+        }
     }
 
     void Right()
     {
-        gameObject.GetComponent<Rigidbody>().AddForce(leftRightVector * force, ForceMode.Impulse);
         isMoving = true;
-        stop = false;
-        StartCoroutine(CooldownRoutine());
-        StartCoroutine(StopRight());
+        StartCoroutine(MoveRight());
+        StartCoroutine(MoveMiddle());
+    }
+
+    private IEnumerator MoveRight()
+    {
+        Vector3 origPos = gameObject.transform.position;
+        float totalMovementTime = 1f;
+        float currentMovementTime = 0f;
+        while (Vector3.Distance(gameObject.transform.position, right) > 0.1f && anim.applyRootMotion)
+        {
+            currentMovementTime += Time.deltaTime;
+            gameObject.transform.position = Vector3.Lerp(origPos, right, currentMovementTime / totalMovementTime);
+            yield return null;
+        }
+
+    }
+
+    private IEnumerator MoveMiddle()
+    {
+        yield return new WaitForSeconds(1.5f);
+        isMoving = false;
+        Vector3 origPos = gameObject.transform.position;
+        float totalMovementTime = 0.5f;
+        float currentMovementTime = 0f;
+        while (Vector3.Distance(gameObject.transform.position, middle) > 0.1f && anim.applyRootMotion)
+        {
+            currentMovementTime += Time.deltaTime;
+            gameObject.transform.position = Vector3.Lerp(origPos, middle, currentMovementTime / totalMovementTime);
+            yield return null;
+        }
     }
 
     void Start()
@@ -260,7 +298,6 @@ public class PlayerController : MonoBehaviour
             if (inputController.inputDirectionLeftSide == InputController.Direction.Left)
             {
                 Left();
-                leftRight = true;
                 GameObject starsClone = GameObject.Instantiate(stars);
                 starsClone.transform.parent = gameObject.transform;
                 starsClone.transform.position = new Vector3(128, 71, -5);
@@ -273,19 +310,12 @@ public class PlayerController : MonoBehaviour
             if (inputController.inputDirectionRightSide == InputController.Direction.Right)
             {
                 Right();
-                leftRight = true;
                 GameObject starsClone = GameObject.Instantiate(stars);
                 starsClone.transform.parent = gameObject.transform;
                 starsClone.transform.position = new Vector3(128, 71, -5);
                 StartCoroutine(RemoveObject(starsClone, 2.0f));
                 success.Play();
             }
-        }
-
-        if (!isMoving && leftRight)
-        {
-            MoveBack();
-            leftRight = false;
         }
 
         if (gameObject.transform.position.y < 70)
@@ -318,53 +348,11 @@ public class PlayerController : MonoBehaviour
         angryLeft.SetActive(false);
         angryRight.SetActive(false);
     }
-
-    private IEnumerator StopLeft()
-    {
-        while (!stop)
-        {
-            yield return new WaitForSeconds(0.325f);
-            gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
-            gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-            stop = true;
-        }
-    }
-
-    private IEnumerator StopRight()
-    {
-        while (!stop)
-        {
-            yield return new WaitForSeconds(0.325f);
-            gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
-            gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-            stop = true;
-        }
-    }
-
     private IEnumerator StopDamage()
     {
         healthCooldown = true;
         yield return new WaitForSeconds(0.25f);
         healthCooldown = false;
-    }
-
-    private IEnumerator StopMiddle()
-    {
-        while (!stop)
-        {
-            yield return new WaitForSeconds(0.325f);
-            gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
-            gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-            if (gameObject.transform.position.x < 128)
-            {
-                gameObject.transform.position = gameObject.transform.position + (new Vector3(128 - gameObject.transform.position.x, 0, 0));
-            }
-            else if (gameObject.transform.position.x > 128)
-            {
-                gameObject.transform.position = gameObject.transform.position - (new Vector3(Math.Abs(128 - gameObject.transform.position.x), 0, 0));
-            }
-            stop = true;
-        }
     }
 
     private IEnumerator Freeze(string obst)
@@ -420,22 +408,6 @@ public class PlayerController : MonoBehaviour
                 yield return new WaitForSeconds(0.25f);
             }
             freezed = false;
-        }
-    }
-
-    private void MoveBack()
-    {
-        if (gameObject.transform.position.x < 128)
-        {
-            gameObject.GetComponent<Rigidbody>().AddForce(leftRightVector * force, ForceMode.Impulse);
-            stop = false;
-            StartCoroutine(StopMiddle());
-        }
-        else
-        {
-            gameObject.GetComponent<Rigidbody>().AddForce(-leftRightVector * force, ForceMode.Impulse);
-            stop = false;
-            StartCoroutine(StopMiddle());
         }
     }
 }
