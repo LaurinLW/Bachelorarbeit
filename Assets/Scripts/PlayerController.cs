@@ -103,7 +103,6 @@ public class PlayerController : MonoBehaviour
     {
         if (juicy)
         {
-            hurt.Play(0);
             smoke.Play();
             juicyText.SetActive(true);
             StartCoroutine(Angry());
@@ -114,6 +113,8 @@ public class PlayerController : MonoBehaviour
     {
         if ((collision.gameObject.name == "Obstacle" || collision.gameObject.name == "ObstacleTwo") && collision.gameObject.transform.position.z > gameObject.transform.position.z && !freezed)
         {
+            anim.applyRootMotion = false;
+            hurt.Play(0);
             if (collision.gameObject.tag == "left")
             {
                 if (inputController.leftPercent < 90f)
@@ -399,7 +400,7 @@ public class PlayerController : MonoBehaviour
                 mapGenerator.moveBack = new Vector3(0, 0, 0);
                 yield return new WaitForSeconds(0.8f);
                 mapGenerator.moveBack = new Vector3(0, 0, 0.05f);
-                yield return new WaitForSeconds(1.7f);
+                yield return new WaitForSeconds(3.5f);
                 anim.SetInteger("AnimationPar", 1);
             }
             else if (obst == "right")
@@ -408,10 +409,11 @@ public class PlayerController : MonoBehaviour
                 mapGenerator.moveBack = new Vector3(0, 0, 0);
                 yield return new WaitForSeconds(0.5f);
                 mapGenerator.moveBack = new Vector3(0, 0, 0.05f);
-                yield return new WaitForSeconds(2f);
+                yield return new WaitForSeconds(3.4f);
                 anim.SetInteger("AnimationPar", 1);
             }
             juicyText.SetActive(false);
+            anim.applyRootMotion = true;
             Vector3 addUp = new Vector3(0, 0, (restoreSpeed.z - mapGenerator.moveBack.z) * 0.0625f);
             for (; mapGenerator.moveBack.z < restoreSpeed.z; mapGenerator.moveBack += addUp)
             {
