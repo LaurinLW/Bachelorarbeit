@@ -29,6 +29,8 @@ public class PlayerController : MonoBehaviour
 
     public GameObject angryLeft;
     public GameObject angryRight;
+    public GameObject juicyText;
+
     public GameObject stars;
     public bool juicy;
     private bool stop;
@@ -97,15 +99,21 @@ public class PlayerController : MonoBehaviour
     private Vector3 restoreSpeed;
     private bool freezed;
 
+    void juicyRoutine()
+    {
+        if (juicy)
+        {
+            hurt.Play(0);
+            smoke.Play();
+            juicyText.SetActive(true);
+            StartCoroutine(Angry());
+        }
+    }
+
     void OnCollisionEnter(Collision collision)
     {
         if ((collision.gameObject.name == "Obstacle" || collision.gameObject.name == "ObstacleTwo") && collision.gameObject.transform.position.z > gameObject.transform.position.z && !freezed)
         {
-            if (juicy)
-            {
-                smoke.Play();
-                StartCoroutine(Angry());
-            }
             if (collision.gameObject.tag == "left")
             {
                 if (inputController.leftPercent < 90f)
@@ -114,6 +122,7 @@ public class PlayerController : MonoBehaviour
                 }
                 else
                 {
+                    juicyRoutine();
                     freezed = true;
                     StartCoroutine(Freeze(collision.gameObject.tag));
                 }
@@ -126,6 +135,7 @@ public class PlayerController : MonoBehaviour
                 }
                 else
                 {
+                    juicyRoutine();
                     freezed = true;
                     StartCoroutine(Freeze(collision.gameObject.tag));
                 }
@@ -139,6 +149,7 @@ public class PlayerController : MonoBehaviour
                 }
                 else
                 {
+                    juicyRoutine();
                     freezed = true;
                     StartCoroutine(Freeze(collision.gameObject.tag));
                 }
@@ -359,21 +370,17 @@ public class PlayerController : MonoBehaviour
     {
         while (freezed)
         {
-            if (juicy)
+            if (obst == "jump")
             {
-                hurt.Play(0);
-                if (obst == "jump")
-                {
-                    anim.SetInteger("AnimationPar", 4);
-                }
-                else if (obst == "left")
-                {
-                    anim.SetInteger("AnimationPar", 6);
-                }
-                else if (obst == "right")
-                {
-                    anim.SetInteger("AnimationPar", 5);
-                }
+                anim.SetInteger("AnimationPar", 4);
+            }
+            else if (obst == "left")
+            {
+                anim.SetInteger("AnimationPar", 6);
+            }
+            else if (obst == "right")
+            {
+                anim.SetInteger("AnimationPar", 5);
             }
             if (obst == "jump")
             {
@@ -385,14 +392,18 @@ public class PlayerController : MonoBehaviour
                 mapGenerator.moveBack = new Vector3(0, 0, 0.3f);
                 yield return new WaitForSeconds(0.1f);
                 anim.SetInteger("AnimationPar", 1);
-            } else if(obst == "left") {
+            }
+            else if (obst == "left")
+            {
                 restoreSpeed = mapGenerator.moveBack;
                 mapGenerator.moveBack = new Vector3(0, 0, 0);
                 yield return new WaitForSeconds(0.8f);
                 mapGenerator.moveBack = new Vector3(0, 0, 0.05f);
                 yield return new WaitForSeconds(1.7f);
                 anim.SetInteger("AnimationPar", 1);
-            } else if(obst == "right") {
+            }
+            else if (obst == "right")
+            {
                 restoreSpeed = mapGenerator.moveBack;
                 mapGenerator.moveBack = new Vector3(0, 0, 0);
                 yield return new WaitForSeconds(0.5f);
@@ -400,7 +411,7 @@ public class PlayerController : MonoBehaviour
                 yield return new WaitForSeconds(2f);
                 anim.SetInteger("AnimationPar", 1);
             }
-
+            juicyText.SetActive(false);
             Vector3 addUp = new Vector3(0, 0, (restoreSpeed.z - mapGenerator.moveBack.z) * 0.0625f);
             for (; mapGenerator.moveBack.z < restoreSpeed.z; mapGenerator.moveBack += addUp)
             {
