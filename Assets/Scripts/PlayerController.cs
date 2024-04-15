@@ -99,7 +99,7 @@ public class PlayerController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if ((collision.gameObject.name == "Obstacle" || collision.gameObject.name == "ObstacleTwo") && collision.gameObject.transform.position.z > gameObject.transform.position.z)
+        if ((collision.gameObject.name == "Obstacle" || collision.gameObject.name == "ObstacleTwo") && collision.gameObject.transform.position.z > gameObject.transform.position.z && !freezed)
         {
             if (juicy)
             {
@@ -110,24 +110,24 @@ public class PlayerController : MonoBehaviour
             {
                 if (inputController.leftPercent < 90f)
                 {
-                    loseHealth();
+                    loseHealth(collision.gameObject.tag);
                 }
                 else
                 {
                     freezed = true;
-                    StartCoroutine(Freeze());
+                    StartCoroutine(Freeze(collision.gameObject.tag));
                 }
             }
             if (collision.gameObject.tag == "right")
             {
                 if (inputController.rightPercent < 90f)
                 {
-                    loseHealth();
+                    loseHealth(collision.gameObject.tag);
                 }
                 else
                 {
                     freezed = true;
-                    StartCoroutine(Freeze());
+                    StartCoroutine(Freeze(collision.gameObject.tag));
                 }
             }
             if (collision.gameObject.tag == "jump")
@@ -135,18 +135,18 @@ public class PlayerController : MonoBehaviour
                 if (!(inputController.inputDirectionLeftSide == InputController.Direction.Up
                 || inputController.inputDirectionRightSide == InputController.Direction.Up))
                 {
-                    loseHealth();
+                    loseHealth(collision.gameObject.tag);
                 }
                 else
                 {
                     freezed = true;
-                    StartCoroutine(Freeze());
+                    StartCoroutine(Freeze(collision.gameObject.tag));
                 }
             }
         }
     }
 
-    void loseHealth()
+    void loseHealth(string obst)
     {
         if (!healthCooldown)
         {
@@ -160,7 +160,7 @@ public class PlayerController : MonoBehaviour
             else
             {
                 freezed = true;
-                StartCoroutine(Freeze());
+                StartCoroutine(Freeze(obst));
             }
         }
     }
@@ -355,21 +355,52 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private IEnumerator Freeze()
+    private IEnumerator Freeze(string obst)
     {
         while (freezed)
         {
             if (juicy)
             {
                 hurt.Play(0);
-                anim.SetInteger("AnimationPar", 3);
+                if (obst == "jump")
+                {
+                    anim.SetInteger("AnimationPar", 4);
+                }
+                else if (obst == "left")
+                {
+                    anim.SetInteger("AnimationPar", 6);
+                }
+                else if (obst == "right")
+                {
+                    anim.SetInteger("AnimationPar", 5);
+                }
             }
-            restoreSpeed = mapGenerator.moveBack;
-            float diff = mapGenerator.moveBack.z > 1 ? 2 : 1;
-            yield return new WaitForSeconds(freezeTime * (0.2f / diff));
-            mapGenerator.moveBack = new Vector3(0, 0, 0);
-            yield return new WaitForSeconds(freezeTime * (0.8f / diff));
-            anim.SetInteger("AnimationPar", 1);
+            if (obst == "jump")
+            {
+                restoreSpeed = mapGenerator.moveBack;
+                mapGenerator.moveBack = new Vector3(0, 0, 0);
+                yield return new WaitForSeconds(0.5f);
+                mapGenerator.moveBack = new Vector3(0, 0, 0.05f);
+                yield return new WaitForSeconds(1f);
+                mapGenerator.moveBack = new Vector3(0, 0, 0.3f);
+                yield return new WaitForSeconds(0.1f);
+                anim.SetInteger("AnimationPar", 1);
+            } else if(obst == "left") {
+                restoreSpeed = mapGenerator.moveBack;
+                mapGenerator.moveBack = new Vector3(0, 0, 0);
+                yield return new WaitForSeconds(0.8f);
+                mapGenerator.moveBack = new Vector3(0, 0, 0.05f);
+                yield return new WaitForSeconds(1.7f);
+                anim.SetInteger("AnimationPar", 1);
+            } else if(obst == "right") {
+                restoreSpeed = mapGenerator.moveBack;
+                mapGenerator.moveBack = new Vector3(0, 0, 0);
+                yield return new WaitForSeconds(0.5f);
+                mapGenerator.moveBack = new Vector3(0, 0, 0.05f);
+                yield return new WaitForSeconds(2f);
+                anim.SetInteger("AnimationPar", 1);
+            }
+
             Vector3 addUp = new Vector3(0, 0, (restoreSpeed.z - mapGenerator.moveBack.z) * 0.0625f);
             for (; mapGenerator.moveBack.z < restoreSpeed.z; mapGenerator.moveBack += addUp)
             {
