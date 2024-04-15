@@ -138,6 +138,9 @@ public class MapGenerator : MonoBehaviour
     {
         GameObject toRemove = null;
         updateScore();
+        if(moveBack.z > maxSpeed.z){
+            moveBack = maxSpeed;
+        }
         foreach (GameObject part in map)
         {
             if (part.transform.position.z < -150)
