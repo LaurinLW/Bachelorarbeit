@@ -58,7 +58,7 @@ public class PlayerController : MonoBehaviour
     private IEnumerator MoveLeft()
     {
         Vector3 origPos = gameObject.transform.position;
-        float totalMovementTime = 1f;
+        float totalMovementTime = 0.4f;
         float currentMovementTime = 0f;
         while (Vector3.Distance(gameObject.transform.position, left) > 0.1f && anim.applyRootMotion)
         {
@@ -78,7 +78,7 @@ public class PlayerController : MonoBehaviour
     private IEnumerator MoveRight()
     {
         Vector3 origPos = gameObject.transform.position;
-        float totalMovementTime = 1f;
+        float totalMovementTime = 0.4f;
         float currentMovementTime = 0f;
         while (Vector3.Distance(gameObject.transform.position, right) > 0.1f && anim.applyRootMotion)
         {
